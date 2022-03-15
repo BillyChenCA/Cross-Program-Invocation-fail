@@ -48,13 +48,13 @@ const PROGRAM_PATH = path.resolve(__dirname, '../../dist/program');
  *   - `npm run build:program-c`
  *   - `npm run build:program-rust`
  */
-const PROGRAM_SO_PATH = path.join(PROGRAM_PATH, 'helloworld.so');
+const PROGRAM_SO_PATH = path.join(PROGRAM_PATH, 'spl_example_cross_program_invocation.so');
 
 /**
  * Path to the keypair of the deployed program.
  * This file is created when running `solana program deploy dist/program/helloworld.so`
  */
-const PROGRAM_KEYPAIR_PATH = path.join(PROGRAM_PATH, 'helloworld-keypair.json');
+const PROGRAM_KEYPAIR_PATH = path.join(PROGRAM_PATH, 'spl_example_cross_program_invocation-keypair.json');
 
 /**
  * The state of a greeting account managed by the hello world program
@@ -149,16 +149,16 @@ export async function create(): Promise<void> {
   }
 
   // deterministically derive the allocated key
-  let allocated_pubkey = createProgramAddress(&[b"You pass butter"], &programId);
+  let allocated_pubkey = await PublicKey.createProgramAddress([Buffer.from('You pass butter', 'utf8')], programId);
 
   let syskey = SystemProgram.programId;
 
   const instruction = new TransactionInstruction({
-    keys: [{pubkey: syskey, isSigner: false, isWritable: false}，{pubkey: allocated_pubkey, isSigner: false, isWritable: true}],
+    keys: [{pubkey: syskey, isSigner: false, isWritable: false},{pubkey: allocated_pubkey, isSigner: false, isWritable: true}],
     programId,
     data: Buffer.alloc(0), // All instructions are hellos  
   });
-  await sendAndConfirmTransaction(q
+  await sendAndConfirmTransaction(
     connection,
     new Transaction().add(instruction),
     [payer],
