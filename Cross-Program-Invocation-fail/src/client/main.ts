@@ -5,11 +5,11 @@
 import {
   establishConnection,
   establishPayer,
-  create
+  create,
 } from './hello_world';
 
 async function main() {
-  console.log("Let's say hello to a Solana account...");
+  console.log("Let's create an PDA account");
 
   // Establish connection to the cluster
   await establishConnection();

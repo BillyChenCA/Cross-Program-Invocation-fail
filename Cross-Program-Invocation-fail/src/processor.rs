@@ -3,7 +3,7 @@
 use solana_program::{
     account_info::{next_account_info, AccountInfo},
     entrypoint::ProgramResult,
-    program::invoke_signed,
+    program::invoke,
     program_error::ProgramError,
     pubkey::Pubkey,
     system_instruction,
@@ -26,8 +26,9 @@ pub fn process_instruction(
     // Account info to allocate
     let allocated_info = next_account_info(account_info_iter)?;
 
-    let expected_allocated_key =
-        Pubkey::create_program_address(&[b"You pass butter"], program_id)?;
+    let (expected_allocated_key, bump) =
+        Pubkey::find_program_address(&[b"You pass butter"], program_id)?;
+        
     if *allocated_info.key != expected_allocated_key {
         // allocated key does not match the derived address
         return Err(ProgramError::InvalidArgument);
